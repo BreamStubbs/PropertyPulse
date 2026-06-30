@@ -1,17 +1,22 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useStore } from "@/lib/store";
 import { visibleProperties, visibleTasks, visibleProposals } from "@/lib/queries";
 import { PropertyCard } from "@/components/property/PropertyCard";
+import { PropertyFormModal } from "@/components/property/PropertyFormModal";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Field";
 import { Icon } from "@/components/ui/icons";
 
 export default function PropertiesPage() {
   const { data, currentUser } = useStore();
+  const router = useRouter();
   const [query, setQuery] = useState("");
+  const [formOpen, setFormOpen] = useState(false);
 
   const properties = useMemo(
     () => (currentUser ? visibleProperties(data, currentUser) : []),
@@ -21,6 +26,7 @@ export default function PropertiesPage() {
   const proposals = currentUser ? visibleProposals(data, currentUser) : [];
 
   if (!currentUser) return null;
+  const isAdmin = currentUser.role === "admin";
 
   const filtered = properties.filter((p) => {
     const hay = `${p.name} ${p.city} ${p.state} ${p.address_line1}`.toLowerCase();
@@ -29,7 +35,16 @@ export default function PropertiesPage() {
 
   return (
     <div>
-      <PageHeader description="Every property you can access, with quick status at a glance." />
+      <PageHeader
+        description="Every property you can access, with quick status at a glance."
+        action={
+          isAdmin ? (
+            <Button onClick={() => setFormOpen(true)}>
+              <Icon.Plus className="h-5 w-5" /> New property
+            </Button>
+          ) : undefined
+        }
+      />
 
       <div className="mb-6 max-w-md">
         <div className="relative">
@@ -50,8 +65,11 @@ export default function PropertiesPage() {
           description={
             query
               ? "Try a different search term."
-              : "Properties you own or manage will appear here."
+              : isAdmin
+                ? "Add the homes you manage to start building your portfolio."
+                : "Properties you own or manage will appear here."
           }
+          action={!query && isAdmin ? <Button onClick={() => setFormOpen(true)}>Add your first property</Button> : undefined}
         />
       ) : (
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
@@ -65,6 +83,14 @@ export default function PropertiesPage() {
           ))}
         </div>
       )}
+
+      {isAdmin ? (
+        <PropertyFormModal
+          open={formOpen}
+          onClose={() => setFormOpen(false)}
+          onCreated={(id) => router.push(`/properties/${id}`)}
+        />
+      ) : null}
     </div>
   );
 }

@@ -29,6 +29,7 @@ import { NewInvoiceModal } from "@/components/invoices/NewInvoiceModal";
 import { AgendaList } from "@/components/calendar/MonthCalendar";
 import { NewEventModal } from "@/components/calendar/NewEventModal";
 import { NewPhotoModal } from "@/components/property/NewPhotoModal";
+import { PropertyFormModal } from "@/components/property/PropertyFormModal";
 import { clsx } from "@/lib/clsx";
 import { formatDate } from "@/lib/format";
 import type { FileCategory, Profile } from "@/lib/types";
@@ -57,6 +58,7 @@ export default function PropertyDetailPage() {
   const [invoiceModal, setInvoiceModal] = useState(false);
   const [eventModal, setEventModal] = useState(false);
   const [photoModal, setPhotoModal] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
 
   const property = propertyById(data, params.id);
   const isAdmin = currentUser?.role === "admin";
@@ -113,12 +115,19 @@ export default function PropertyDetailPage() {
 
   return (
     <div className="space-y-6">
-      <Link href="/properties" className="inline-flex items-center gap-1 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="m15 18-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-        All properties
-      </Link>
+      <div className="flex items-center justify-between gap-3">
+        <Link href="/properties" className="inline-flex items-center gap-1 text-sm font-medium text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="m15 18-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          All properties
+        </Link>
+        {isAdmin ? (
+          <Button variant="secondary" size="sm" onClick={() => setEditOpen(true)}>
+            Edit property
+          </Button>
+        ) : null}
+      </div>
 
       {/* Hero */}
       <div className="relative aspect-[2/1] w-full overflow-hidden rounded-2xl shadow-card sm:aspect-[5/2]">
@@ -391,6 +400,14 @@ export default function PropertyDetailPage() {
       <NewInvoiceModal open={invoiceModal} onClose={() => setInvoiceModal(false)} properties={[property]} defaultPropertyId={property.id} />
       <NewEventModal open={eventModal} onClose={() => setEventModal(false)} properties={[property]} defaultPropertyId={property.id} />
       <NewPhotoModal open={photoModal} onClose={() => setPhotoModal(false)} propertyId={property.id} />
+      {isAdmin ? (
+        <PropertyFormModal
+          open={editOpen}
+          onClose={() => setEditOpen(false)}
+          property={property}
+          onDeleted={() => router.push("/properties")}
+        />
+      ) : null}
     </div>
   );
 }

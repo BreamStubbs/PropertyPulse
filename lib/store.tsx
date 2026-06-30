@@ -22,7 +22,10 @@ import type {
   Message,
   NotificationPreferences,
   Profile,
+  Property,
   PropertyPhoto,
+  PropertyStatus,
+  PropertyType,
   Proposal,
   ProposalStatus,
   Task,
@@ -70,6 +73,21 @@ function initialState(): State {
   return { data: buildSeed(), currentUserId: null, hydrated: false };
 }
 
+export interface PropertyInput {
+  name: string;
+  address_line1: string;
+  city: string;
+  state: string;
+  zip: string;
+  property_type: PropertyType;
+  status: PropertyStatus;
+  beds?: number;
+  baths?: number;
+  sqft?: number;
+  notes?: string;
+  hero_image_url?: string;
+}
+
 interface StoreContextValue {
   data: AppData;
   currentUser: Profile | null;
@@ -77,6 +95,10 @@ interface StoreContextValue {
   login: (userId: string) => void;
   logout: () => void;
   // mutations
+  addProperty: (input: PropertyInput & { ownerIds: string[] }) => string;
+  updateProperty: (id: string, patch: PropertyInput, ownerIds?: string[]) => void;
+  deleteProperty: (id: string) => void;
+  addOwner: (input: { full_name: string; email: string; phone?: string }) => string;
   addTask: (input: Omit<Task, "id" | "created_at" | "status" | "created_by"> & { status?: TaskStatus }) => void;
   advanceTask: (taskId: string) => void;
   setTaskStatus: (taskId: string, status: TaskStatus) => void;
@@ -237,6 +259,79 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       hydrated: state.hydrated,
       login: (userId) => dispatch({ type: "LOGIN", userId }),
       logout: () => dispatch({ type: "LOGOUT" }),
+
+      addProperty: (input) => {
+        const id = uid("prop");
+        const { ownerIds, ...fields } = input;
+        patch((data, actor) => {
+          const property: Property = {
+            id,
+            ...fields,
+            hero_image_url:
+              fields.hero_image_url ||
+              `https://picsum.photos/seed/${encodeURIComponent(fields.name || id)}/1200/800`,
+          };
+          data.properties.unshift(property);
+          for (const ownerId of ownerIds) {
+            data.property_owners.push({ property_id: id, owner_id: ownerId });
+          }
+          logActivity(data, actor, id, "file", id, `${nameOf(data, actor)} added property “${property.name}”`);
+        });
+        return id;
+      },
+
+      updateProperty: (id, patchInput, ownerIds) =>
+        patch((data) => {
+          const property = data.properties.find((p) => p.id === id);
+          if (!property) return;
+          Object.assign(property, patchInput);
+          if (!property.hero_image_url) {
+            property.hero_image_url = `https://picsum.photos/seed/${encodeURIComponent(property.name || id)}/1200/800`;
+          }
+          if (ownerIds) {
+            data.property_owners = data.property_owners.filter((po) => po.property_id !== id);
+            for (const ownerId of ownerIds) {
+              data.property_owners.push({ property_id: id, owner_id: ownerId });
+            }
+          }
+        }),
+
+      deleteProperty: (id) =>
+        patch((data) => {
+          data.properties = data.properties.filter((p) => p.id !== id);
+          data.property_owners = data.property_owners.filter((po) => po.property_id !== id);
+          data.property_photos = data.property_photos.filter((r) => r.property_id !== id);
+          data.tasks = data.tasks.filter((r) => r.property_id !== id);
+          data.proposals = data.proposals.filter((r) => r.property_id !== id);
+          data.files = data.files.filter((r) => r.property_id !== id);
+          data.invoices = data.invoices.filter((r) => r.property_id !== id);
+          data.calendar_events = data.calendar_events.filter((r) => r.property_id !== id);
+          data.messages = data.messages.filter((r) => r.property_id !== id);
+          data.inspections = data.inspections.filter((r) => r.property_id !== id);
+          data.activity_log = data.activity_log.filter((r) => r.property_id !== id);
+        }),
+
+      addOwner: (input) => {
+        const id = uid("user");
+        patch((data) => {
+          if (data.profiles.some((p) => p.email.toLowerCase() === input.email.toLowerCase())) return;
+          data.profiles.push({
+            id,
+            full_name: input.full_name,
+            email: input.email,
+            phone: input.phone,
+            role: "owner",
+          });
+          data.notification_preferences.push({
+            user_id: id,
+            email_enabled: true,
+            sms_enabled: false,
+            weekly_summary: true,
+            proposal_alerts: true,
+          });
+        });
+        return id;
+      },
 
       addTask: (input) =>
         patch((data, actor) => {
