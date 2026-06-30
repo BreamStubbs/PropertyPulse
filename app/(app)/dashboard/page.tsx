@@ -184,7 +184,7 @@ function OwnerPropertyPanel({ property }: { property: Property }) {
       </Link>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 gap-3 sm:gap-4">
         <StatCard label="Open tasks" value={openTasks.length} icon={<Icon.Tasks className="h-5 w-5" />} tone="amber" href="/tasks" />
         <StatCard label="Completed work" value={completed.length} icon={<Icon.Check className="h-5 w-5" />} tone="emerald" href="/tasks" />
         <StatCard label="Pending proposals" value={pending.length} icon={<Icon.Proposals className="h-5 w-5" />} tone="sky" href="/proposals" />

@@ -24,20 +24,20 @@ export function StatCard({
   };
 
   const inner = (
-    <div className="flex items-center gap-4">
+    <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-4">
       {icon ? (
-        <span className={clsx("flex h-11 w-11 shrink-0 items-center justify-center rounded-xl", toneRing[tone])}>
+        <span className={clsx("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl sm:h-11 sm:w-11", toneRing[tone])}>
           {icon}
         </span>
       ) : null}
-      <div>
-        <div className="font-display text-2xl leading-none text-slate-900">{value}</div>
-        <div className="mt-1 text-sm text-slate-500">{label}</div>
+      <div className="min-w-0">
+        <div className="font-display text-xl leading-none text-slate-900 sm:text-2xl">{value}</div>
+        <div className="mt-1 text-sm leading-snug text-slate-500">{label}</div>
       </div>
     </div>
   );
 
-  const base = "block rounded-2xl border border-stone-200 bg-white p-5 shadow-card transition-colors";
+  const base = "block rounded-2xl border border-stone-200 bg-white p-4 shadow-card transition-colors sm:p-5";
   if (href) {
     return (
       <Link href={href} className={clsx(base, "hover:border-amber-300 hover:bg-amber-50/30")}>
