@@ -10,6 +10,7 @@ import { Toggle } from "@/components/ui/Toggle";
 import { Avatar } from "@/components/ui/Avatar";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { AppearanceControl } from "@/components/ui/AppearanceControl";
+import { ProfilePhotoEditor } from "@/components/ui/ProfilePhotoEditor";
 import { SUPABASE_ENABLED } from "@/lib/supabase/client";
 import Link from "next/link";
 
@@ -44,14 +45,8 @@ export default function SettingsPage() {
       <Card>
         <CardHeader title="Profile" subtitle="Your personal details" />
         <CardBody>
-          <div className="mb-5 flex items-center gap-4">
-            <Avatar name={currentUser.full_name} src={currentUser.avatar_url} size={64} />
-            <div>
-              <div className="font-display text-xl text-slate-900 dark:text-slate-100">{currentUser.full_name}</div>
-              <div className="text-sm capitalize text-slate-500 dark:text-slate-400">
-                {isAdmin ? "Property Manager" : "Owner"}
-              </div>
-            </div>
+          <div className="mb-5">
+            <ProfilePhotoEditor />
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Field label="Full name">

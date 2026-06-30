@@ -86,7 +86,7 @@ interface StoreContextValue {
   addEvent: (input: { property_id: string; title: string; type: EventType; start_date: string; end_date: string; notes?: string }) => void;
   sendMessage: (propertyId: string, body: string) => void;
   updateNotes: (propertyId: string, notes: string) => void;
-  updateProfile: (patch: Partial<Pick<Profile, "full_name" | "email" | "phone">>) => void;
+  updateProfile: (patch: Partial<Pick<Profile, "full_name" | "email" | "phone" | "avatar_url">>) => void;
   updatePrefs: (patch: Partial<NotificationPreferences>) => void;
   resetDemo: () => void;
 }
