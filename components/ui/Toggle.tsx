@@ -16,8 +16,8 @@ export function Toggle({
   return (
     <div className="flex items-center justify-between gap-4 py-3">
       <div>
-        <div className="text-[15px] font-medium text-slate-900">{label}</div>
-        {description ? <div className="text-sm text-slate-500">{description}</div> : null}
+        <div className="text-[15px] font-medium text-slate-900 dark:text-slate-100">{label}</div>
+        {description ? <div className="text-sm text-slate-500 dark:text-slate-400">{description}</div> : null}
       </div>
       <button
         type="button"
@@ -27,7 +27,7 @@ export function Toggle({
         onClick={() => onChange(!checked)}
         className={clsx(
           "relative inline-flex h-7 w-12 shrink-0 items-center rounded-full transition-colors",
-          checked ? "bg-amber-500" : "bg-stone-300",
+          checked ? "bg-amber-500" : "bg-stone-300 dark:bg-slate-700",
         )}
       >
         <span

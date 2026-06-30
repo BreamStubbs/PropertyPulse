@@ -23,20 +23,20 @@ export function TaskCard({
   onAdvance?: (id: string) => void;
 }) {
   return (
-    <div className="rounded-xl border border-stone-200 bg-white p-4 shadow-card">
+    <div className="rounded-xl border border-stone-200 bg-white p-4 shadow-card dark:border-slate-800 dark:bg-slate-900">
       <div className="flex items-start justify-between gap-2">
-        <h4 className="text-[15px] font-semibold leading-snug text-slate-900">{task.title}</h4>
+        <h4 className="text-[15px] font-semibold leading-snug text-slate-900 dark:text-slate-100">{task.title}</h4>
         <StatusPill status={task.priority} size="sm" />
       </div>
-      {propertyName ? <p className="mt-0.5 text-[13px] text-slate-500">{propertyName}</p> : null}
-      {task.description ? <p className="mt-2 text-sm text-slate-600">{task.description}</p> : null}
+      {propertyName ? <p className="mt-0.5 text-[13px] text-slate-500 dark:text-slate-400">{propertyName}</p> : null}
+      {task.description ? <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{task.description}</p> : null}
 
       {task.photo_url ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={task.photo_url} alt="" className="mt-3 h-28 w-full rounded-lg object-cover" />
       ) : null}
 
-      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] text-slate-500">
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] text-slate-500 dark:text-slate-400">
         {task.due_date ? (
           <span className="inline-flex items-center gap-1">
             <Icon.Calendar className="h-4 w-4" /> Due {formatDate(task.due_date)}

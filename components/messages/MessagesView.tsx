@@ -45,8 +45,8 @@ export function MessagesView({ initialPropertyId }: { initialPropertyId?: string
   return (
     <div className="grid h-[calc(100vh-9rem)] grid-cols-1 gap-4 lg:grid-cols-[20rem_1fr]">
       {/* Thread list */}
-      <div className="hidden flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-card lg:flex">
-        <div className="border-b border-stone-200 px-4 py-3 text-sm font-semibold uppercase tracking-wide text-slate-600">
+      <div className="hidden flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-card dark:border-slate-800 dark:bg-slate-900 lg:flex">
+        <div className="border-b border-stone-200 px-4 py-3 text-sm font-semibold uppercase tracking-wide text-slate-600 dark:border-slate-800 dark:text-slate-300">
           Conversations
         </div>
         <div className="flex-1 overflow-y-auto">
@@ -60,20 +60,20 @@ export function MessagesView({ initialPropertyId }: { initialPropertyId?: string
                   router.replace(`/messages/${t.property.id}`);
                 }}
                 className={clsx(
-                  "flex w-full items-center gap-3 border-b border-stone-100 px-4 py-3 text-left transition-colors hover:bg-stone-50",
-                  active?.property.id === t.property.id && "bg-amber-50",
+                  "flex w-full items-center gap-3 border-b border-stone-100 px-4 py-3 text-left transition-colors hover:bg-stone-50 dark:border-slate-800 dark:hover:bg-slate-800/60",
+                  active?.property.id === t.property.id && "bg-amber-50 dark:bg-amber-500/10",
                 )}
               >
-                <span className="h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-stone-200">
+                <span className="h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-stone-200 dark:bg-slate-800">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={t.property.hero_image_url} alt="" className="h-full w-full object-cover" />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <div className="truncate text-[15px] font-medium text-slate-900">{t.property.name}</div>
-                  <div className="truncate text-[13px] text-slate-500">{counterpartyFor(t.property.id)}</div>
-                  {last ? <div className="truncate text-[13px] text-slate-400">{last.body}</div> : null}
+                  <div className="truncate text-[15px] font-medium text-slate-900 dark:text-slate-100">{t.property.name}</div>
+                  <div className="truncate text-[13px] text-slate-500 dark:text-slate-400">{counterpartyFor(t.property.id)}</div>
+                  {last ? <div className="truncate text-[13px] text-slate-400 dark:text-slate-500">{last.body}</div> : null}
                 </div>
-                {last ? <span className="shrink-0 text-[12px] text-slate-400">{relativeTime(last.created_at)}</span> : null}
+                {last ? <span className="shrink-0 text-[12px] text-slate-400 dark:text-slate-500">{relativeTime(last.created_at)}</span> : null}
               </button>
             );
           })}
@@ -81,14 +81,14 @@ export function MessagesView({ initialPropertyId }: { initialPropertyId?: string
       </div>
 
       {/* Active thread */}
-      <div className="flex flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-card">
+      <div className="flex flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-card dark:border-slate-800 dark:bg-slate-900">
         {active ? (
           <>
-            <div className="flex items-center gap-3 border-b border-stone-200 px-4 py-3">
+            <div className="flex items-center gap-3 border-b border-stone-200 px-4 py-3 dark:border-slate-800">
               <Avatar name={active.property.name} src={active.property.hero_image_url} size={40} className="rounded-xl" />
               <div className="min-w-0">
-                <div className="truncate font-display text-lg text-slate-900">{active.property.name}</div>
-                <div className="truncate text-[13px] text-slate-500">{counterpartyFor(active.property.id)}</div>
+                <div className="truncate font-display text-lg text-slate-900 dark:text-slate-100">{active.property.name}</div>
+                <div className="truncate text-[13px] text-slate-500 dark:text-slate-400">{counterpartyFor(active.property.id)}</div>
               </div>
               {/* Mobile thread switcher */}
               <select
@@ -97,7 +97,7 @@ export function MessagesView({ initialPropertyId }: { initialPropertyId?: string
                   setSelectedId(e.target.value);
                   router.replace(`/messages/${e.target.value}`);
                 }}
-                className="ml-auto rounded-lg border border-stone-300 px-2 py-1.5 text-sm lg:hidden"
+                className="ml-auto rounded-lg border border-stone-300 px-2 py-1.5 text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 lg:hidden"
                 aria-label="Switch conversation"
               >
                 {threads.map((t) => (

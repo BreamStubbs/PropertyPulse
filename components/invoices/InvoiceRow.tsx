@@ -10,20 +10,20 @@ export function InvoiceRow({ invoice, propertyName }: { invoice: Invoice; proper
   return (
     <div className="flex flex-wrap items-center gap-3 px-4 py-3 sm:flex-nowrap">
       <div className="min-w-0 flex-1">
-        <div className="truncate text-[15px] font-medium text-slate-900">{invoice.title}</div>
-        <div className="truncate text-[13px] text-slate-500">
+        <div className="truncate text-[15px] font-medium text-slate-900 dark:text-slate-100">{invoice.title}</div>
+        <div className="truncate text-[13px] text-slate-500 dark:text-slate-400">
           {propertyName ? `${propertyName} · ` : ""}
           Issued {formatDate(invoice.issued_at)} · Due {formatDate(invoice.due_date)}
         </div>
       </div>
-      <div className="font-display text-lg text-slate-900">{currency(invoice.amount)}</div>
+      <div className="font-display text-lg text-slate-900 dark:text-slate-100">{currency(invoice.amount)}</div>
       <div className="w-28 shrink-0">
         <StatusPill status={invoice.status} />
       </div>
       <div className="flex shrink-0 items-center gap-2">
         <button
           onClick={() => alert(`Downloading invoice “${invoice.title}” (demo placeholder).`)}
-          className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-500 hover:bg-stone-100"
+          className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-500 hover:bg-stone-100 dark:text-slate-400 dark:hover:bg-slate-800"
           aria-label="Download invoice"
         >
           <Icon.Download className="h-5 w-5" />
@@ -32,7 +32,7 @@ export function InvoiceRow({ invoice, propertyName }: { invoice: Invoice; proper
           <button
             disabled
             title="Online payments coming soon"
-            className="cursor-not-allowed rounded-lg border border-stone-200 px-3 py-2 text-[13px] font-medium text-slate-400"
+            className="cursor-not-allowed rounded-lg border border-stone-200 px-3 py-2 text-[13px] font-medium text-slate-400 dark:border-slate-700 dark:text-slate-500"
           >
             Pay now — soon
           </button>

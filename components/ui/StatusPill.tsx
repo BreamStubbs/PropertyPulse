@@ -3,12 +3,12 @@ import { clsx } from "@/lib/clsx";
 type Tone = "success" | "warning" | "danger" | "info" | "neutral" | "violet";
 
 const TONE_CLASSES: Record<Tone, string> = {
-  success: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
-  warning: "bg-amber-50 text-amber-700 ring-amber-600/20",
-  danger: "bg-rose-50 text-rose-700 ring-rose-600/20",
-  info: "bg-sky-50 text-sky-700 ring-sky-600/20",
-  neutral: "bg-slate-100 text-slate-700 ring-slate-600/15",
-  violet: "bg-violet-50 text-violet-700 ring-violet-600/20",
+  success: "bg-emerald-50 text-emerald-700 ring-emerald-600/20 dark:bg-emerald-500/15 dark:text-emerald-300 dark:ring-emerald-400/25",
+  warning: "bg-amber-50 text-amber-700 ring-amber-600/20 dark:bg-amber-500/15 dark:text-amber-300 dark:ring-amber-400/25",
+  danger: "bg-rose-50 text-rose-700 ring-rose-600/20 dark:bg-rose-500/15 dark:text-rose-300 dark:ring-rose-400/25",
+  info: "bg-sky-50 text-sky-700 ring-sky-600/20 dark:bg-sky-500/15 dark:text-sky-300 dark:ring-sky-400/25",
+  neutral: "bg-slate-100 text-slate-700 ring-slate-600/15 dark:bg-slate-700/50 dark:text-slate-200 dark:ring-slate-400/20",
+  violet: "bg-violet-50 text-violet-700 ring-violet-600/20 dark:bg-violet-500/15 dark:text-violet-300 dark:ring-violet-400/25",
 };
 
 // Maps every status string in the schema to a tone. Color is never the only

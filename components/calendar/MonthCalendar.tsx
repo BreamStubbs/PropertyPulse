@@ -6,11 +6,11 @@ import { Icon } from "@/components/ui/icons";
 import type { CalendarEvent, EventType } from "@/lib/types";
 
 const EVENT_TONE: Record<EventType, string> = {
-  Reservation: "bg-sky-100 text-sky-800 border-sky-200",
-  "Owner Stay": "bg-emerald-100 text-emerald-800 border-emerald-200",
-  "Maintenance Block": "bg-amber-100 text-amber-800 border-amber-200",
-  Inspection: "bg-violet-100 text-violet-800 border-violet-200",
-  Note: "bg-slate-100 text-slate-700 border-slate-200",
+  Reservation: "bg-sky-100 text-sky-800 border-sky-200 dark:bg-sky-500/20 dark:text-sky-200 dark:border-sky-500/30",
+  "Owner Stay": "bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-500/20 dark:text-emerald-200 dark:border-emerald-500/30",
+  "Maintenance Block": "bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-500/20 dark:text-amber-200 dark:border-amber-500/30",
+  Inspection: "bg-violet-100 text-violet-800 border-violet-200 dark:bg-violet-500/20 dark:text-violet-200 dark:border-violet-500/30",
+  Note: "bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-700/50 dark:text-slate-200 dark:border-slate-600",
 };
 
 const LEGEND: EventType[] = ["Reservation", "Owner Stay", "Maintenance Block", "Inspection", "Note"];
@@ -67,13 +67,13 @@ export function MonthCalendar({
   };
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-card">
-      <div className="flex items-center justify-between border-b border-stone-200 px-4 py-3">
-        <h3 className="font-display text-xl text-slate-900">{monthLabel}</h3>
+    <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-card dark:border-slate-800 dark:bg-slate-900">
+      <div className="flex items-center justify-between border-b border-stone-200 px-4 py-3 dark:border-slate-800">
+        <h3 className="font-display text-xl text-slate-900 dark:text-slate-100">{monthLabel}</h3>
         <div className="flex items-center gap-1">
           <button
             onClick={() => setCursor(new Date(cursor.getFullYear(), cursor.getMonth() - 1, 1))}
-            className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-500 hover:bg-stone-100"
+            className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-500 hover:bg-stone-100 dark:text-slate-400 dark:hover:bg-slate-800"
             aria-label="Previous month"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -82,13 +82,13 @@ export function MonthCalendar({
           </button>
           <button
             onClick={() => setCursor(new Date(2026, 6, 1))}
-            className="rounded-lg px-3 py-2 text-sm font-medium text-slate-500 hover:bg-stone-100"
+            className="rounded-lg px-3 py-2 text-sm font-medium text-slate-500 hover:bg-stone-100 dark:text-slate-400 dark:hover:bg-slate-800"
           >
             Today
           </button>
           <button
             onClick={() => setCursor(new Date(cursor.getFullYear(), cursor.getMonth() + 1, 1))}
-            className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-500 hover:bg-stone-100"
+            className="flex h-10 w-10 items-center justify-center rounded-lg text-slate-500 hover:bg-stone-100 dark:text-slate-400 dark:hover:bg-slate-800"
             aria-label="Next month"
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -98,7 +98,7 @@ export function MonthCalendar({
         </div>
       </div>
 
-      <div className="grid grid-cols-7 border-b border-stone-200 bg-stone-50 text-center text-[13px] font-medium text-slate-500">
+      <div className="grid grid-cols-7 border-b border-stone-200 bg-stone-50 text-center text-[13px] font-medium text-slate-500 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-400">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
           <div key={d} className="py-2">
             {d}
@@ -117,15 +117,19 @@ export function MonthCalendar({
               key={i}
               onClick={() => selectDay(d)}
               className={clsx(
-                "min-h-[84px] border-b border-r border-stone-100 p-1.5 text-left align-top transition-colors hover:bg-amber-50/40",
-                !inMonth && "bg-stone-50/60 text-slate-300",
-                selected === key && "bg-amber-50 ring-1 ring-inset ring-amber-300",
+                "min-h-[84px] border-b border-r border-stone-100 p-1.5 text-left align-top transition-colors hover:bg-amber-50/40 dark:border-slate-800 dark:hover:bg-amber-500/10",
+                !inMonth && "bg-stone-50/60 text-slate-300 dark:bg-slate-800/40 dark:text-slate-600",
+                selected === key && "bg-amber-50 ring-1 ring-inset ring-amber-300 dark:bg-amber-500/10 dark:ring-amber-500/40",
               )}
             >
               <span
                 className={clsx(
                   "inline-flex h-6 w-6 items-center justify-center rounded-full text-[13px]",
-                  isToday ? "bg-amber-500 font-semibold text-white" : inMonth ? "text-slate-700" : "text-slate-300",
+                  isToday
+                    ? "bg-amber-500 font-semibold text-white"
+                    : inMonth
+                      ? "text-slate-700 dark:text-slate-200"
+                      : "text-slate-300 dark:text-slate-600",
                 )}
               >
                 {d.getDate()}
@@ -141,7 +145,7 @@ export function MonthCalendar({
                   </div>
                 ))}
                 {dayEvents.length > 2 ? (
-                  <div className="px-1 text-[11px] text-slate-400">+{dayEvents.length - 2} more</div>
+                  <div className="px-1 text-[11px] text-slate-400 dark:text-slate-500">+{dayEvents.length - 2} more</div>
                 ) : null}
               </div>
             </button>
@@ -149,9 +153,9 @@ export function MonthCalendar({
         })}
       </div>
 
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-stone-200 px-4 py-3">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-stone-200 px-4 py-3 dark:border-slate-800">
         {LEGEND.map((t) => (
-          <span key={t} className="inline-flex items-center gap-1.5 text-[13px] text-slate-600">
+          <span key={t} className="inline-flex items-center gap-1.5 text-[13px] text-slate-600 dark:text-slate-300">
             <span className={clsx("h-3 w-3 rounded border", EVENT_TONE[t])} />
             {t}
           </span>
@@ -166,11 +170,11 @@ export function AgendaList({ events }: { events: CalendarEvent[] }) {
   return (
     <div className="space-y-2">
       {sorted.map((e) => (
-        <div key={e.id} className="flex items-center gap-3 rounded-xl border border-stone-200 bg-white px-4 py-3">
+        <div key={e.id} className="flex items-center gap-3 rounded-xl border border-stone-200 bg-white px-4 py-3 dark:border-slate-800 dark:bg-slate-900">
           <span className={clsx("h-10 w-1.5 rounded-full", EVENT_TONE[e.type])} />
           <div className="min-w-0 flex-1">
-            <div className="truncate text-[15px] font-medium text-slate-900">{e.title}</div>
-            <div className="truncate text-[13px] text-slate-500">
+            <div className="truncate text-[15px] font-medium text-slate-900 dark:text-slate-100">{e.title}</div>
+            <div className="truncate text-[13px] text-slate-500 dark:text-slate-400">
               {e.type} · {e.start_date}
               {e.end_date !== e.start_date ? ` – ${e.end_date}` : ""}
             </div>

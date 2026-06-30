@@ -6,10 +6,22 @@
   color-scheme: light;
 }
 
+.dark {
+  color-scheme: dark;
+}
+
 html,
 body {
   background-color: theme("colors.stone.50");
   color: theme("colors.slate.900");
+}
+
+.dark html,
+.dark body,
+html.dark,
+html.dark body {
+  background-color: theme("colors.slate.950");
+  color: theme("colors.slate.100");
 }
 
 body {
@@ -34,7 +46,7 @@ body {
   select:focus-visible,
   textarea:focus-visible,
   [tabindex]:not([tabindex="-1"]):focus-visible {
-    @apply ring-2 ring-amber-500 ring-offset-2 ring-offset-white rounded-md;
+    @apply ring-2 ring-amber-500 ring-offset-2 ring-offset-white rounded-md dark:ring-offset-slate-950;
   }
 }
 

@@ -71,7 +71,7 @@ export default function InvoicesPage() {
           action={isAdmin ? <Button onClick={() => setModalOpen(true)}>New invoice</Button> : undefined}
         />
       ) : (
-        <div className="divide-y divide-stone-100 overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-card">
+        <div className="divide-y divide-stone-100 overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-card dark:divide-slate-800 dark:border-slate-800 dark:bg-slate-900">
           {filtered.map((i) => (
             <InvoiceRow key={i.id} invoice={i} propertyName={propName(i.property_id)} />
           ))}

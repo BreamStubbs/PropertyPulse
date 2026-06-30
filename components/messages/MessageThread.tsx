@@ -41,7 +41,7 @@ export function MessageThread({
     <div className="flex h-full flex-col">
       <div ref={listRef} className={clsx("flex-1 space-y-4 overflow-y-auto p-4", compact && "max-h-72")}>
         {messages.length === 0 ? (
-          <p className="py-8 text-center text-sm text-slate-400">No messages yet. Say hello 👋</p>
+          <p className="py-8 text-center text-sm text-slate-400 dark:text-slate-500">No messages yet. Say hello 👋</p>
         ) : (
           messages.map((m) => {
             const mine = m.sender_id === currentUserId;
@@ -53,12 +53,12 @@ export function MessageThread({
                   <div
                     className={clsx(
                       "inline-block rounded-2xl px-3.5 py-2 text-[15px]",
-                      mine ? "bg-amber-500 text-white" : "bg-stone-100 text-slate-800",
+                      mine ? "bg-amber-500 text-white" : "bg-stone-100 text-slate-800 dark:bg-slate-800 dark:text-slate-100",
                     )}
                   >
                     {m.body}
                   </div>
-                  <div className="mt-1 text-[12px] text-slate-400">
+                  <div className="mt-1 text-[12px] text-slate-400 dark:text-slate-500">
                     {sender?.full_name?.split(" ")[0]} · {relativeTime(m.created_at)}
                   </div>
                 </div>
@@ -68,7 +68,7 @@ export function MessageThread({
         )}
       </div>
 
-      <div className="flex items-center gap-2 border-t border-stone-200 p-3">
+      <div className="flex items-center gap-2 border-t border-stone-200 p-3 dark:border-slate-800">
         <input
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
@@ -79,7 +79,7 @@ export function MessageThread({
             }
           }}
           placeholder="Type a message…"
-          className="min-h-[44px] flex-1 rounded-xl border border-stone-300 bg-white px-3.5 text-[15px] focus:border-amber-500 focus:ring-2 focus:ring-amber-500/30"
+          className="min-h-[44px] flex-1 rounded-xl border border-stone-300 bg-white px-3.5 text-[15px] focus:border-amber-500 focus:ring-2 focus:ring-amber-500/30 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
         />
         <button
           onClick={send}

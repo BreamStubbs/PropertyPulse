@@ -111,7 +111,7 @@ export default function PropertyDetailPage() {
 
   return (
     <div className="space-y-6">
-      <Link href="/properties" className="inline-flex items-center gap-1 text-sm font-medium text-slate-500 hover:text-slate-700">
+      <Link href="/properties" className="inline-flex items-center gap-1 text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="m15 18-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
@@ -131,7 +131,7 @@ export default function PropertyDetailPage() {
       </div>
 
       {/* Quick facts */}
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[15px] text-slate-600">
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[15px] text-slate-600 dark:text-slate-300">
         <span className="inline-flex items-center gap-1.5">{property.property_type}</span>
         <span className="inline-flex items-center gap-1.5"><Icon.Bed className="h-5 w-5 text-slate-400" /> {property.beds ?? "—"} beds</span>
         <span className="inline-flex items-center gap-1.5"><Icon.Bath className="h-5 w-5 text-slate-400" /> {property.baths ?? "—"} baths</span>
@@ -139,14 +139,16 @@ export default function PropertyDetailPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 overflow-x-auto border-b border-stone-200">
+      <div className="flex gap-1 overflow-x-auto border-b border-stone-200 dark:border-slate-800">
         {TABS.map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
             className={clsx(
               "whitespace-nowrap border-b-2 px-4 py-2.5 text-[15px] font-medium transition-colors min-h-[44px]",
-              tab === t ? "border-amber-500 text-slate-900" : "border-transparent text-slate-500 hover:text-slate-700",
+              tab === t
+                ? "border-amber-500 text-slate-900 dark:text-slate-100 dark:text-slate-100"
+                : "border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200",
             )}
           >
             {t}
@@ -175,7 +177,7 @@ export default function PropertyDetailPage() {
                     </Button>
                   </div>
                 ) : (
-                  <p className="whitespace-pre-wrap text-[15px] text-slate-700">{property.notes || "No notes yet."}</p>
+                  <p className="whitespace-pre-wrap text-[15px] text-slate-700 dark:text-slate-200">{property.notes || "No notes yet."}</p>
                 )}
               </CardBody>
             </Card>
@@ -197,9 +199,9 @@ export default function PropertyDetailPage() {
                   <div className="flex items-center gap-3">
                     <Avatar name={contact.full_name} src={contact.avatar_url} size={48} />
                     <div>
-                      <div className="font-medium text-slate-900">{contact.full_name}</div>
-                      <div className="text-[13px] text-slate-500">{contact.email}</div>
-                      {contact.phone ? <div className="text-[13px] text-slate-500">{contact.phone}</div> : null}
+                      <div className="font-medium text-slate-900 dark:text-slate-100">{contact.full_name}</div>
+                      <div className="text-[13px] text-slate-500 dark:text-slate-400">{contact.email}</div>
+                      {contact.phone ? <div className="text-[13px] text-slate-500 dark:text-slate-400">{contact.phone}</div> : null}
                     </div>
                   </div>
                   <Button variant="secondary" className="mt-4 w-full" onClick={() => router.push(`/messages/${property.id}`)}>
@@ -218,10 +220,10 @@ export default function PropertyDetailPage() {
         ) : (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
             {photos.map((ph) => (
-              <figure key={ph.id} className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-card">
+              <figure key={ph.id} className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-card dark:border-slate-800 dark:bg-slate-900">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={ph.url} alt={ph.caption ?? ""} className="aspect-[4/3] w-full object-cover" />
-                <figcaption className="flex items-center justify-between px-3 py-2 text-[13px] text-slate-500">
+                <figcaption className="flex items-center justify-between px-3 py-2 text-[13px] text-slate-500 dark:text-slate-400">
                   <span className="truncate">{ph.caption}</span>
                   <span>{formatDate(ph.taken_at)}</span>
                 </figcaption>
@@ -235,19 +237,19 @@ export default function PropertyDetailPage() {
         maintenance.length === 0 ? (
           <EmptyState icon={<Icon.Tasks className="h-6 w-6" />} title="No maintenance history" description="Completed work and inspection reports will appear here." />
         ) : (
-          <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-card">
-            <ul className="divide-y divide-stone-100">
+          <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-card dark:border-slate-800 dark:bg-slate-900">
+            <ul className="divide-y divide-stone-100 dark:divide-slate-800">
               {maintenance.map((m) => (
                 <li key={m.id} className="flex items-start gap-3 px-5 py-4">
-                  <span className={clsx("mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg", m.kind === "Inspection" ? "bg-violet-50 text-violet-600" : "bg-emerald-50 text-emerald-600")}>
+                  <span className={clsx("mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg", m.kind === "Inspection" ? "bg-violet-50 text-violet-600 dark:bg-violet-500/15 dark:text-violet-300" : "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-300")}>
                     {m.kind === "Inspection" ? <Icon.Proposals className="h-5 w-5" /> : <Icon.Check className="h-5 w-5" />}
                   </span>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="font-medium text-slate-900">{m.title}</span>
+                      <span className="font-medium text-slate-900 dark:text-slate-100">{m.title}</span>
                       {m.status ? <StatusPill status={m.status} size="sm" /> : <span className="text-[13px] text-slate-400">{m.kind}</span>}
                     </div>
-                    {m.detail ? <p className="mt-0.5 text-sm text-slate-600">{m.detail}</p> : null}
+                    {m.detail ? <p className="mt-0.5 text-sm text-slate-600 dark:text-slate-300">{m.detail}</p> : null}
                     <p className="mt-0.5 text-[13px] text-slate-400">{formatDate(m.date)}</p>
                   </div>
                 </li>
@@ -267,9 +269,9 @@ export default function PropertyDetailPage() {
             </div>
           ) : null}
           <section>
-            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-600">Open work</h3>
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-300">Open work</h3>
             {openWork.length === 0 ? (
-              <p className="text-sm text-slate-500">No open work.</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">No open work.</p>
             ) : (
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {openWork.map((t) => (
@@ -279,9 +281,9 @@ export default function PropertyDetailPage() {
             )}
           </section>
           <section>
-            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-600">Completed work</h3>
+            <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-300">Completed work</h3>
             {completedWork.length === 0 ? (
-              <p className="text-sm text-slate-500">No completed work yet.</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">No completed work yet.</p>
             ) : (
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {completedWork.map((t) => (
@@ -324,7 +326,7 @@ export default function PropertyDetailPage() {
           {invoices.length === 0 ? (
             <EmptyState icon={<Icon.Invoices className="h-6 w-6" />} title="No invoices" description="Invoices for this property will appear here." />
           ) : (
-            <div className="divide-y divide-stone-100 overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-card">
+            <div className="divide-y divide-stone-100 overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-card dark:divide-slate-800 dark:border-slate-800 dark:bg-slate-900">
               {invoices.map((i) => (
                 <InvoiceRow key={i.id} invoice={i} />
               ))}
@@ -364,9 +366,9 @@ export default function PropertyDetailPage() {
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-xl bg-stone-50 p-3">
-      <div className="font-display text-2xl text-slate-900">{value}</div>
-      <div className="text-[13px] text-slate-500">{label}</div>
+    <div className="rounded-xl bg-stone-50 p-3 dark:bg-slate-800/50">
+      <div className="font-display text-2xl text-slate-900 dark:text-slate-100 dark:text-slate-100">{value}</div>
+      <div className="text-[13px] text-slate-500 dark:text-slate-400 dark:text-slate-400">{label}</div>
     </div>
   );
 }

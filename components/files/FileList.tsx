@@ -8,12 +8,12 @@ import type { FileRecord, Profile } from "@/lib/types";
 export function FileRow({ file, uploader }: { file: FileRecord; uploader?: Profile }) {
   return (
     <div className="flex items-center gap-3 px-4 py-3">
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-stone-100 text-slate-500">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-stone-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
         <Icon.Files className="h-5 w-5" />
       </span>
       <div className="min-w-0 flex-1">
-        <div className="truncate text-[15px] font-medium text-slate-900">{file.name}</div>
-        <div className="truncate text-[13px] text-slate-500">
+        <div className="truncate text-[15px] font-medium text-slate-900 dark:text-slate-100">{file.name}</div>
+        <div className="truncate text-[13px] text-slate-500 dark:text-slate-400">
           {uploader ? `${uploader.full_name} · ` : ""}
           {formatDate(file.uploaded_at)} · {fileSize(file.size_bytes)}
         </div>
@@ -41,12 +41,12 @@ export function FileGroup({
   uploaders: Record<string, Profile>;
 }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-card">
-      <div className="flex items-center justify-between border-b border-stone-200 bg-stone-50 px-4 py-2.5">
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-600">{category}</h3>
-        <span className="text-[13px] text-slate-400">{files.length}</span>
+    <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-card dark:border-slate-800 dark:bg-slate-900">
+      <div className="flex items-center justify-between border-b border-stone-200 bg-stone-50 px-4 py-2.5 dark:border-slate-800 dark:bg-slate-800/50">
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-300">{category}</h3>
+        <span className="text-[13px] text-slate-400 dark:text-slate-500">{files.length}</span>
       </div>
-      <div className="divide-y divide-stone-100">
+      <div className="divide-y divide-stone-100 dark:divide-slate-800">
         {files.map((f) => (
           <FileRow key={f.id} file={f} uploader={f.uploaded_by ? uploaders[f.uploaded_by] : undefined} />
         ))}

@@ -68,17 +68,17 @@ export default function LoginPage() {
       </div>
 
       {/* Form panel */}
-      <div className="flex flex-1 items-center justify-center bg-stone-50 px-6 py-12">
+      <div className="flex flex-1 items-center justify-center bg-stone-50 px-6 py-12 dark:bg-slate-950">
         <div className="w-full max-w-md">
           <div className="mb-8 flex items-center gap-2 lg:hidden">
             <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500">
               <Icon.Pin className="h-6 w-6 text-white" />
             </span>
-            <span className="font-display text-2xl text-slate-900">PropertyPulse</span>
+            <span className="font-display text-2xl text-slate-900 dark:text-slate-100">PropertyPulse</span>
           </div>
 
-          <h2 className="font-display text-3xl text-slate-900">Welcome back</h2>
-          <p className="mt-1 text-[15px] text-slate-500">Sign in to your owner portal.</p>
+          <h2 className="font-display text-3xl text-slate-900 dark:text-slate-100">Welcome back</h2>
+          <p className="mt-1 text-[15px] text-slate-500 dark:text-slate-400">Sign in to your owner portal.</p>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             <Field label="Email">
@@ -108,10 +108,10 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <div className="my-6 flex items-center gap-3 text-sm text-slate-400">
-            <span className="h-px flex-1 bg-stone-200" />
+          <div className="my-6 flex items-center gap-3 text-sm text-slate-400 dark:text-slate-500">
+            <span className="h-px flex-1 bg-stone-200 dark:bg-slate-800" />
             or jump in as a demo account
-            <span className="h-px flex-1 bg-stone-200" />
+            <span className="h-px flex-1 bg-stone-200 dark:bg-slate-800" />
           </div>
 
           <div className="space-y-2">
@@ -145,16 +145,18 @@ function DemoAccount({
   return (
     <button
       onClick={onClick}
-      className="flex w-full items-center gap-3 rounded-xl border border-stone-200 bg-white px-4 py-3 text-left transition-colors hover:border-amber-300 hover:bg-amber-50/40 min-h-[44px]"
+      className="flex w-full items-center gap-3 rounded-xl border border-stone-200 bg-white px-4 py-3 text-left transition-colors hover:border-amber-300 hover:bg-amber-50/40 min-h-[44px] dark:border-slate-800 dark:bg-slate-900 dark:hover:border-amber-500/40 dark:hover:bg-amber-500/10"
     >
       <Avatar name={profile.full_name} src={profile.avatar_url} size={40} />
       <div className="min-w-0">
-        <div className="truncate font-medium text-slate-900">{profile.full_name}</div>
-        <div className="truncate text-[13px] text-slate-500">{subtitle}</div>
+        <div className="truncate font-medium text-slate-900 dark:text-slate-100">{profile.full_name}</div>
+        <div className="truncate text-[13px] text-slate-500 dark:text-slate-400">{subtitle}</div>
       </div>
       <span
         className={`ml-auto rounded-full px-2 py-0.5 text-[12px] font-medium ${
-          profile.role === "admin" ? "bg-amber-100 text-amber-700" : "bg-slate-100 text-slate-600"
+          profile.role === "admin"
+            ? "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300"
+            : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
         }`}
       >
         {profile.role}

@@ -59,7 +59,7 @@ export default function FilesPage() {
 
       <div className="mb-4 flex flex-wrap gap-3">
         <div className="relative min-w-[12rem] flex-1">
-          <Icon.Search className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+          <Icon.Search className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
           <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search files" className="pl-10" />
         </div>
         <Select value={propertyFilter} onChange={(e) => setPropertyFilter(e.target.value)} className="max-w-xs" aria-label="Filter by property">
@@ -79,7 +79,9 @@ export default function FilesPage() {
             onClick={() => setCategory(c)}
             className={clsx(
               "rounded-full px-3 py-1.5 text-sm font-medium transition-colors min-h-[36px]",
-              category === c ? "bg-amber-500 text-white" : "bg-white text-slate-600 ring-1 ring-inset ring-stone-200 hover:bg-stone-50",
+              category === c
+                ? "bg-amber-500 text-white"
+                : "bg-white text-slate-600 ring-1 ring-inset ring-stone-200 hover:bg-stone-50 dark:bg-slate-900 dark:text-slate-300 dark:ring-slate-700 dark:hover:bg-slate-800",
             )}
           >
             {c === "all" ? "All" : c}

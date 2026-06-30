@@ -33,7 +33,7 @@ export default function PropertiesPage() {
 
       <div className="mb-6 max-w-md">
         <div className="relative">
-          <Icon.Search className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+          <Icon.Search className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}

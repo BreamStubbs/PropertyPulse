@@ -51,7 +51,7 @@ function AdminDashboard() {
 
   return (
     <div className="space-y-6">
-      <p className="text-[15px] text-slate-500">
+      <p className="text-[15px] text-slate-500 dark:text-slate-400">
         Welcome back, {user.full_name.split(" ")[0]}. Here’s how your portfolio is doing.
       </p>
 
@@ -65,7 +65,7 @@ function AdminDashboard() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="font-display text-xl text-slate-900">Portfolio</h2>
+            <h2 className="font-display text-xl text-slate-900 dark:text-slate-100">Portfolio</h2>
             <Link href="/properties" className="text-sm font-medium text-amber-600 hover:text-amber-700">
               View all
             </Link>
@@ -90,7 +90,7 @@ function AdminDashboard() {
               {Object.entries(statusCounts).map(([status, count]) => (
                 <div key={status} className="flex items-center justify-between">
                   <StatusPill status={status} size="sm" />
-                  <span className="font-display text-lg text-slate-900">{count}</span>
+                  <span className="font-display text-lg text-slate-900 dark:text-slate-100">{count}</span>
                 </div>
               ))}
             </CardBody>
@@ -117,7 +117,7 @@ function OwnerDashboard() {
   const [activeId, setActiveId] = useState(properties[0]?.id);
 
   if (properties.length === 0) {
-    return <p className="text-slate-500">No properties are linked to your account yet.</p>;
+    return <p className="text-slate-500 dark:text-slate-400">No properties are linked to your account yet.</p>;
   }
 
   const active = properties.find((p) => p.id === activeId) ?? properties[0];
@@ -132,7 +132,9 @@ function OwnerDashboard() {
               onClick={() => setActiveId(p.id)}
               className={clsx(
                 "rounded-full px-4 py-2 text-sm font-medium transition-colors min-h-[44px]",
-                active.id === p.id ? "bg-slate-900 text-white" : "bg-white text-slate-600 ring-1 ring-inset ring-stone-200 hover:bg-stone-50",
+                active.id === p.id
+                  ? "bg-slate-900 text-white dark:bg-amber-500 dark:text-white"
+                  : "bg-white text-slate-600 dark:text-slate-300 ring-1 ring-inset ring-stone-200 hover:bg-stone-50 dark:bg-slate-900 dark:text-slate-300 dark:ring-slate-700 dark:hover:bg-slate-800",
               )}
             >
               {p.name}
@@ -203,13 +205,13 @@ function OwnerPropertyPanel({ property }: { property: Property }) {
             <CardHeader title="Upcoming on the calendar" action={<Link href="/calendar" className="text-sm font-medium text-amber-600">View calendar</Link>} />
             <CardBody className="space-y-3">
               {events.length === 0 ? (
-                <p className="text-sm text-slate-500">No upcoming events.</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">No upcoming events.</p>
               ) : (
                 events.map((e) => (
                   <div key={e.id} className="flex items-center justify-between gap-3">
                     <div>
-                      <div className="font-medium text-slate-900">{e.title}</div>
-                      <div className="text-[13px] text-slate-500">
+                      <div className="font-medium text-slate-900 dark:text-slate-100">{e.title}</div>
+                      <div className="text-[13px] text-slate-500 dark:text-slate-400">
                         {formatDate(e.start_date)}
                         {e.end_date !== e.start_date ? ` – ${formatDate(e.end_date)}` : ""}
                       </div>
@@ -227,7 +229,7 @@ function OwnerPropertyPanel({ property }: { property: Property }) {
             <CardHeader title="Recent photos" action={<Link href={`/properties/${property.id}`} className="text-sm font-medium text-amber-600">Gallery</Link>} />
             <CardBody>
               {photos.length === 0 ? (
-                <p className="text-sm text-slate-500">No photos yet.</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">No photos yet.</p>
               ) : (
                 <div className="grid grid-cols-2 gap-2">
                   {photos.map((ph) => (
@@ -269,19 +271,19 @@ function ActivityFeed({
   properties: Property[];
 }) {
   if (activity.length === 0) {
-    return <p className="px-5 py-6 text-sm text-slate-500">No recent activity.</p>;
+    return <p className="px-5 py-6 text-sm text-slate-500 dark:text-slate-400">No recent activity.</p>;
   }
   const propName = (id: string) => properties.find((p) => p.id === id)?.name;
   return (
-    <ul className="divide-y divide-stone-100">
+    <ul className="divide-y divide-stone-100 dark:divide-slate-800">
       {activity.map((a) => {
         const actor = profiles.find((p) => p.id === a.actor_id);
         return (
           <li key={a.id} className="flex items-start gap-3 px-5 py-3">
             <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-amber-400" />
             <div className="min-w-0">
-              <p className="text-[15px] text-slate-700">{a.description}</p>
-              <p className="text-[13px] text-slate-400">
+              <p className="text-[15px] text-slate-700 dark:text-slate-200">{a.description}</p>
+              <p className="text-[13px] text-slate-400 dark:text-slate-500">
                 {propName(a.property_id) ? `${propName(a.property_id)} · ` : ""}
                 {relativeTime(a.created_at)}
               </p>

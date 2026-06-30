@@ -64,10 +64,10 @@ export default function TasksPage() {
           {COLUMNS.map((col) => {
             const colTasks = filtered.filter((t) => t.status === col);
             return (
-              <div key={col} className="rounded-2xl bg-stone-100/70 p-3">
+              <div key={col} className="rounded-2xl bg-stone-100/70 p-3 dark:bg-slate-900/50">
                 <div className="mb-3 flex items-center justify-between px-1">
-                  <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-600">{col}</h2>
-                  <span className="rounded-full bg-white px-2 py-0.5 text-[13px] font-medium text-slate-500">
+                  <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-300">{col}</h2>
+                  <span className="rounded-full bg-white px-2 py-0.5 text-[13px] font-medium text-slate-500 dark:bg-slate-800 dark:text-slate-400">
                     {colTasks.length}
                   </span>
                 </div>
@@ -82,7 +82,7 @@ export default function TasksPage() {
                     />
                   ))}
                   {colTasks.length === 0 ? (
-                    <p className="px-1 py-6 text-center text-[13px] text-slate-400">Nothing here</p>
+                    <p className="px-1 py-6 text-center text-[13px] text-slate-400 dark:text-slate-500">Nothing here</p>
                   ) : null}
                 </div>
               </div>
