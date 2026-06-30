@@ -51,3 +51,33 @@ export async function fileToAvatarDataUrl(file: File, size = 256): Promise<strin
 
   return canvas.toDataURL("image/jpeg", 0.85);
 }
+
+/**
+ * Turn an uploaded image File into a gallery-sized JPEG data URL. Keeps the
+ * aspect ratio and downscales so the longest edge is at most `maxEdge` px,
+ * keeping the synced record reasonably small.
+ */
+export async function fileToGalleryDataUrl(file: File, maxEdge = 1280): Promise<string> {
+  if (!file.type.startsWith("image/")) {
+    throw new Error("Please choose an image file (JPG, PNG, etc.).");
+  }
+  if (file.size > MAX_UPLOAD_BYTES) {
+    throw new Error("That image is too large. Please pick one under 10 MB.");
+  }
+
+  const src = await readAsDataUrl(file);
+  const img = await loadImage(src);
+
+  const scale = Math.min(1, maxEdge / Math.max(img.width, img.height));
+  const w = Math.round(img.width * scale);
+  const h = Math.round(img.height * scale);
+
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Image processing isn't supported in this browser.");
+  ctx.drawImage(img, 0, 0, w, h);
+
+  return canvas.toDataURL("image/jpeg", 0.82);
+}

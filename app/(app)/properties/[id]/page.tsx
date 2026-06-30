@@ -28,6 +28,7 @@ import { InvoiceRow } from "@/components/invoices/InvoiceRow";
 import { NewInvoiceModal } from "@/components/invoices/NewInvoiceModal";
 import { AgendaList } from "@/components/calendar/MonthCalendar";
 import { NewEventModal } from "@/components/calendar/NewEventModal";
+import { NewPhotoModal } from "@/components/property/NewPhotoModal";
 import { clsx } from "@/lib/clsx";
 import { formatDate } from "@/lib/format";
 import type { FileCategory, Profile } from "@/lib/types";
@@ -49,12 +50,13 @@ const FILE_CATEGORIES: FileCategory[] = [
 export default function PropertyDetailPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
-  const { data, currentUser, advanceTask, updateNotes } = useStore();
+  const { data, currentUser, advanceTask, updateNotes, removePropertyPhoto } = useStore();
   const [tab, setTab] = useState<Tab>("Overview");
   const [taskModal, setTaskModal] = useState(false);
   const [fileModal, setFileModal] = useState(false);
   const [invoiceModal, setInvoiceModal] = useState(false);
   const [eventModal, setEventModal] = useState(false);
+  const [photoModal, setPhotoModal] = useState(false);
 
   const property = propertyById(data, params.id);
   const isAdmin = currentUser?.role === "admin";
@@ -215,22 +217,50 @@ export default function PropertyDetailPage() {
       ) : null}
 
       {tab === "Gallery" ? (
-        photos.length === 0 ? (
-          <EmptyState icon={<Icon.Properties className="h-6 w-6" />} title="No photos yet" description="Photos of this property will appear here." />
-        ) : (
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-            {photos.map((ph) => (
-              <figure key={ph.id} className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-card dark:border-slate-800 dark:bg-slate-900">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={ph.url} alt={ph.caption ?? ""} className="aspect-[4/3] w-full object-cover" />
-                <figcaption className="flex items-center justify-between px-3 py-2 text-[13px] text-slate-500 dark:text-slate-400">
-                  <span className="truncate">{ph.caption}</span>
-                  <span>{formatDate(ph.taken_at)}</span>
-                </figcaption>
-              </figure>
-            ))}
-          </div>
-        )
+        <div className="space-y-5">
+          {isAdmin ? (
+            <div className="flex justify-end">
+              <Button onClick={() => setPhotoModal(true)}>
+                <Icon.Plus className="h-5 w-5" /> Add photo
+              </Button>
+            </div>
+          ) : null}
+          {photos.length === 0 ? (
+            <EmptyState
+              icon={<Icon.Properties className="h-6 w-6" />}
+              title="No photos yet"
+              description={isAdmin ? "Add photos to build this property’s gallery." : "Photos of this property will appear here."}
+              action={isAdmin ? <Button onClick={() => setPhotoModal(true)}>Add photo</Button> : undefined}
+            />
+          ) : (
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+              {photos.map((ph) => (
+                <figure key={ph.id} className="group relative overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-card dark:border-slate-800 dark:bg-slate-900">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={ph.url} alt={ph.caption ?? ""} className="aspect-[4/3] w-full object-cover" />
+                  {isAdmin ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (confirm("Remove this photo?")) removePropertyPhoto(ph.id);
+                      }}
+                      aria-label="Remove photo"
+                      className="absolute right-2 top-2 flex h-9 w-9 items-center justify-center rounded-full bg-slate-900/65 text-white opacity-0 transition hover:bg-rose-600 focus-visible:opacity-100 group-hover:opacity-100"
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v5M14 11v5" />
+                      </svg>
+                    </button>
+                  ) : null}
+                  <figcaption className="flex items-center justify-between px-3 py-2 text-[13px] text-slate-500 dark:text-slate-400">
+                    <span className="truncate">{ph.caption}</span>
+                    <span className="shrink-0 pl-2">{formatDate(ph.taken_at)}</span>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          )}
+        </div>
       ) : null}
 
       {tab === "Maintenance" ? (
@@ -360,6 +390,7 @@ export default function PropertyDetailPage() {
       <NewFileModal open={fileModal} onClose={() => setFileModal(false)} properties={[property]} defaultPropertyId={property.id} />
       <NewInvoiceModal open={invoiceModal} onClose={() => setInvoiceModal(false)} properties={[property]} defaultPropertyId={property.id} />
       <NewEventModal open={eventModal} onClose={() => setEventModal(false)} properties={[property]} defaultPropertyId={property.id} />
+      <NewPhotoModal open={photoModal} onClose={() => setPhotoModal(false)} propertyId={property.id} />
     </div>
   );
 }
@@ -367,8 +398,8 @@ export default function PropertyDetailPage() {
 function Stat({ label, value }: { label: string; value: number }) {
   return (
     <div className="rounded-xl bg-stone-50 p-3 dark:bg-slate-800/50">
-      <div className="font-display text-2xl text-slate-900 dark:text-slate-100 dark:text-slate-100">{value}</div>
-      <div className="text-[13px] text-slate-500 dark:text-slate-400 dark:text-slate-400">{label}</div>
+      <div className="font-display text-2xl text-slate-900 dark:text-slate-100">{value}</div>
+      <div className="text-[13px] text-slate-500 dark:text-slate-400">{label}</div>
     </div>
   );
 }

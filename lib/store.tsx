@@ -22,6 +22,7 @@ import type {
   Message,
   NotificationPreferences,
   Profile,
+  PropertyPhoto,
   Proposal,
   ProposalStatus,
   Task,
@@ -85,6 +86,8 @@ interface StoreContextValue {
   addInvoice: (input: { property_id: string; title: string; amount: number; due_date?: string }) => void;
   addEvent: (input: { property_id: string; title: string; type: EventType; start_date: string; end_date: string; notes?: string }) => void;
   sendMessage: (propertyId: string, body: string) => void;
+  addPropertyPhoto: (input: { property_id: string; url: string; caption?: string }) => void;
+  removePropertyPhoto: (photoId: string) => void;
   updateNotes: (propertyId: string, notes: string) => void;
   updateProfile: (patch: Partial<Pick<Profile, "full_name" | "email" | "phone" | "avatar_url">>) => void;
   updatePrefs: (patch: Partial<NotificationPreferences>) => void;
@@ -372,6 +375,24 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           };
           data.messages.push(message);
           logActivity(data, actor, propertyId, "message", message.id, `${profile.full_name} sent a message`);
+        }),
+
+      addPropertyPhoto: (input) =>
+        patch((data, actor) => {
+          const photo: PropertyPhoto = {
+            id: uid("ph"),
+            property_id: input.property_id,
+            url: input.url,
+            caption: input.caption,
+            taken_at: new Date().toISOString().slice(0, 10),
+            uploaded_by: actor,
+          };
+          data.property_photos.unshift(photo);
+        }),
+
+      removePropertyPhoto: (photoId) =>
+        patch((data) => {
+          data.property_photos = data.property_photos.filter((p) => p.id !== photoId);
         }),
 
       updateNotes: (propertyId, notes) =>
