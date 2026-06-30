@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  background-color: theme("colors.stone.50");
+  color: theme("colors.slate.900");
+}
+
+body {
+  font-feature-settings: "cv11", "ss01";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Visible keyboard focus on every interactive element (spec §10). */
+@layer base {
+  a,
+  button,
+  input,
+  select,
+  textarea,
+  [tabindex]:not([tabindex="-1"]) {
+    @apply outline-none;
+  }
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  [tabindex]:not([tabindex="-1"]):focus-visible {
+    @apply ring-2 ring-amber-500 ring-offset-2 ring-offset-white rounded-md;
+  }
+}
+
+@layer components {
+  /* Minimum 44x44 tap targets for primary interactive elements (spec §10). */
+  .tap-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+}
