@@ -21,10 +21,14 @@ export function MessageThread({
   compact?: boolean;
 }) {
   const [draft, setDraft] = useState("");
-  const endRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
 
+  // Keep the latest message in view by scrolling the thread's own container —
+  // NOT scrollIntoView(), which would also scroll the whole page down to the
+  // thread on load (e.g. the dashboard message snippet).
   useEffect(() => {
-    endRef.current?.scrollIntoView({ block: "end" });
+    const el = listRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [messages.length]);
 
   const send = () => {
@@ -35,7 +39,7 @@ export function MessageThread({
 
   return (
     <div className="flex h-full flex-col">
-      <div className={clsx("flex-1 space-y-4 overflow-y-auto p-4", compact && "max-h-72")}>
+      <div ref={listRef} className={clsx("flex-1 space-y-4 overflow-y-auto p-4", compact && "max-h-72")}>
         {messages.length === 0 ? (
           <p className="py-8 text-center text-sm text-slate-400">No messages yet. Say hello 👋</p>
         ) : (
@@ -62,7 +66,6 @@ export function MessageThread({
             );
           })
         )}
-        <div ref={endRef} />
       </div>
 
       <div className="flex items-center gap-2 border-t border-stone-200 p-3">
