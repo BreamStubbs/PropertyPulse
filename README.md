@@ -44,9 +44,11 @@ The spec recommends **Supabase** (Postgres + Auth + Storage + RLS). This repo sh
 
 Role scoping in the running app is enforced in `lib/queries.ts`, which mirrors the RLS rules exactly (admins see everything; owners see only properties linked via `property_owners`).
 
-### Why mock data instead of live Supabase?
+### Cloud sync (optional, recommended)
 
-This build environment can't provision a Supabase project or hold its secrets, so wiring directly to a live instance wasn't possible here. The mock store keeps the app demoable end-to-end while keeping the swap small and well-defined.
+Set `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_ANON_KEY` to turn on **cross-device persistence**: the whole dataset is stored as one JSON record in a Supabase `app_state` table, loaded on startup, saved (debounced) on every change, and refreshed on tab focus. With no keys set, the app falls back to local browser storage automatically. Full walkthrough: **[SUPABASE_SETUP.md](./SUPABASE_SETUP.md)**.
+
+This simple-sync mode is a demo convenience (shared record, public anon key, last-write-wins). For real per-user accounts and database security, use the full schema below.
 
 ### Swapping in Supabase
 

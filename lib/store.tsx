@@ -6,10 +6,12 @@ import {
   useEffect,
   useMemo,
   useReducer,
+  useRef,
   type ReactNode,
 } from "react";
 import { buildSeed } from "./seed";
 import { uid } from "./format";
+import { getSupabase, loadRemoteData, saveRemoteData, SUPABASE_ENABLED } from "./supabase/client";
 import type {
   AppData,
   CalendarEvent,
@@ -38,6 +40,7 @@ interface State {
 
 type Action =
   | { type: "HYDRATE"; payload: State }
+  | { type: "REPLACE_DATA"; data: AppData }
   | { type: "LOGIN"; userId: string }
   | { type: "LOGOUT" }
   | { type: "PATCH"; mutate: (data: AppData, actorId: string) => void };
@@ -46,6 +49,8 @@ function reducer(state: State, action: Action): State {
   switch (action.type) {
     case "HYDRATE":
       return { ...action.payload, hydrated: true };
+    case "REPLACE_DATA":
+      return { ...state, data: action.data };
     case "LOGIN":
       return { ...state, currentUserId: action.userId };
     case "LOGOUT":
@@ -119,9 +124,47 @@ const NEXT_STATUS: Record<TaskStatus, TaskStatus> = {
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, undefined, initialState);
+  const savingRef = useRef(false);
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Hydrate from localStorage once on mount.
+  // The viewed persona is per-device; only the dataset is shared in the cloud.
+  function readLocalUser(): string | null {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? (JSON.parse(raw).currentUserId ?? null) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  // Hydrate on mount: from Supabase when configured, else from localStorage.
   useEffect(() => {
+    let cancelled = false;
+    const sb = getSupabase();
+    const localUser = readLocalUser();
+
+    if (sb) {
+      (async () => {
+        const remote = await loadRemoteData(sb);
+        if (cancelled) return;
+        if (remote) {
+          dispatch({ type: "HYDRATE", payload: { data: remote, currentUserId: localUser, hydrated: true } });
+        } else {
+          // First run against an empty cloud DB: seed it.
+          const seed = buildSeed();
+          await saveRemoteData(sb, seed);
+          if (cancelled) return;
+          dispatch({ type: "HYDRATE", payload: { data: seed, currentUserId: localUser, hydrated: true } });
+        }
+      })().catch(() => {
+        if (!cancelled) dispatch({ type: "HYDRATE", payload: { data: buildSeed(), currentUserId: localUser, hydrated: true } });
+      });
+      return () => {
+        cancelled = true;
+      };
+    }
+
+    // localStorage fallback
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
@@ -135,7 +178,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "HYDRATE", payload: { data: buildSeed(), currentUserId: null, hydrated: true } });
   }, []);
 
-  // Persist whenever state changes (after hydration).
+  // Persist on change: always cache locally; debounce-sync the dataset to the cloud.
   useEffect(() => {
     if (!state.hydrated) return;
     try {
@@ -146,7 +189,35 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     } catch {
       /* storage full / unavailable */
     }
+
+    const sb = getSupabase();
+    if (!sb) return;
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => {
+      savingRef.current = true;
+      saveRemoteData(sb, state.data).finally(() => {
+        savingRef.current = false;
+      });
+    }, 700);
   }, [state]);
+
+  // Pull the latest dataset when the tab regains focus, so edits made on another
+  // device show up. Skipped while a local save is in flight to avoid clobbering.
+  useEffect(() => {
+    const sb = getSupabase();
+    if (!sb) return;
+    const onFocus = async () => {
+      if (savingRef.current || document.visibilityState === "hidden") return;
+      const remote = await loadRemoteData(sb);
+      if (remote) dispatch({ type: "REPLACE_DATA", data: remote });
+    };
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onFocus);
+    return () => {
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onFocus);
+    };
+  }, []);
 
   const currentUser = useMemo(
     () => state.data.profiles.find((p) => p.id === state.currentUserId) ?? null,
@@ -331,7 +402,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         } catch {
           /* noop */
         }
-        dispatch({ type: "HYDRATE", payload: { data: buildSeed(), currentUserId: state.currentUserId, hydrated: true } });
+        const seed = buildSeed();
+        const sb = getSupabase();
+        if (sb) void saveRemoteData(sb, seed);
+        dispatch({ type: "HYDRATE", payload: { data: seed, currentUserId: state.currentUserId, hydrated: true } });
       },
     };
   }, [state.data, state.hydrated, currentUser, state.currentUserId]);

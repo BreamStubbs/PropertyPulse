@@ -10,6 +10,7 @@ import { Toggle } from "@/components/ui/Toggle";
 import { Avatar } from "@/components/ui/Avatar";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { AppearanceControl } from "@/components/ui/AppearanceControl";
+import { SUPABASE_ENABLED } from "@/lib/supabase/client";
 import Link from "next/link";
 
 const INTEGRATIONS = [
@@ -182,10 +183,25 @@ export default function SettingsPage() {
 
       {/* Demo controls */}
       <Card>
-        <CardHeader title="Demo data" subtitle="This MVP stores data in your browser." />
+        <CardHeader
+          title="Demo data"
+          subtitle={SUPABASE_ENABLED ? "Synced to your Supabase project." : "Stored in this browser."}
+        />
         <CardBody>
+          <div
+            className={`mb-3 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[13px] font-medium ring-1 ring-inset ${
+              SUPABASE_ENABLED
+                ? "bg-emerald-50 text-emerald-700 ring-emerald-600/20 dark:bg-emerald-500/15 dark:text-emerald-300 dark:ring-emerald-400/25"
+                : "bg-slate-100 text-slate-600 ring-slate-600/15 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-400/20"
+            }`}
+          >
+            <span className={`h-2 w-2 rounded-full ${SUPABASE_ENABLED ? "bg-emerald-500" : "bg-slate-400"}`} />
+            {SUPABASE_ENABLED ? "Cloud sync on — changes follow you across devices" : "Local only — changes stay on this device"}
+          </div>
           <p className="text-sm text-slate-500 dark:text-slate-400">
-            All changes you make are saved locally in this browser. Reset to restore the original seed data.
+            {SUPABASE_ENABLED
+              ? "Your changes are saved to Supabase and synced across devices. Reset to restore the original seed data everywhere."
+              : "All changes you make are saved locally in this browser. Reset to restore the original seed data."}
           </p>
           <Button
             variant="secondary"
